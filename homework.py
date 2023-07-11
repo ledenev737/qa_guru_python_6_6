@@ -8,7 +8,11 @@ def test_dark_theme_by_time():
     current_time = time(hour=23)
     # TODO переключите темную тему в зависимости от времени суток (с 22 до 6 часов утра - ночь)
 
-    is_dark_theme = None
+    if current_time.hour >= 22 or current_time.hour < 6:
+        is_dark_theme = True
+    else:
+        is_dark_theme = False
+
     assert is_dark_theme is True
 
 
@@ -24,8 +28,13 @@ def test_dark_theme_by_time_and_user_choice():
     dark_theme_enabled_by_user = True
     # TODO переключите темную тему в зависимости от времени суток,
     #  но учтите что темная тема может быть включена вручную
+    if current_time.hour >= 22 or current_time.hour < 6:
+        is_dark_theme = True
+    elif dark_theme_enabled_by_user:
+        is_dark_theme = True
+    else:
+        is_dark_theme = False
 
-    is_dark_theme = None
     assert is_dark_theme is True
 
 
@@ -42,11 +51,12 @@ def test_find_suitable_user():
     ]
 
     # TODO найдите пользователя с именем "Olga"
-    suitable_users = None
+
+    suitable_users = next(user for user in users if user["name"] == "Olga")
     assert suitable_users == {"name": "Olga", "age": 45}
 
     # TODO найдите всех пользователей младше 20 лет
-    suitable_users = None
+    suitable_users = [user for user in users if user["age"] < 20]
     assert suitable_users == [
         {"name": "Stanislav", "age": 15},
         {"name": "Maria", "age": 18},
@@ -64,6 +74,14 @@ def test_find_suitable_user():
 # "Open Browser [Chrome]"
 
 
+def readable_name_and_args(func, *args):
+    readable_func = func.__name__.replace("_", " ").title()
+    readable_args = ", ".join(args)
+    result = f'{readable_func} [{readable_args}]'
+    print(result)
+    return result
+
+
 def test_readable_function():
     open_browser(browser_name="Chrome")
     go_to_companyname_homepage(page_url="https://companyname.com")
@@ -71,15 +89,15 @@ def test_readable_function():
 
 
 def open_browser(browser_name):
-    actual_result = None
+    actual_result = readable_name_and_args(open_browser, browser_name)
     assert actual_result == "Open Browser [Chrome]"
 
 
 def go_to_companyname_homepage(page_url):
-    actual_result = None
+    actual_result = readable_name_and_args(go_to_companyname_homepage, page_url)
     assert actual_result == "Go To Companyname Homepage [https://companyname.com]"
 
 
 def find_registration_button_on_login_page(page_url, button_text):
-    actual_result = None
+    actual_result = readable_name_and_args(find_registration_button_on_login_page, page_url, button_text)
     assert actual_result == "Find Registration Button On Login Page [https://companyname.com/login, Register]"
